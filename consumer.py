@@ -2,7 +2,7 @@ import pika
 
 def callback(ch, method, properties, body):
     print(f"Mensaje recibido: {body.decode()}")
-    # ❌ NO hacemos basic_ack()
+    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost')
@@ -13,8 +13,7 @@ channel.queue_declare(queue='test_queue', durable=True)
 
 channel.basic_consume(
     queue='test_queue',
-    on_message_callback=callback,
-    auto_ack=False
+    on_message_callback=callback
 )
 
 print("Esperando mensajes...")
