@@ -38,7 +38,10 @@ def on_message(client, userdata, msg):
     rabbit_ch.basic_publish(
         exchange=EXCHANGE,
         routing_key=routing_key,
-        body=json.dumps(data)
+        body=json.dumps(data),
+        properties=pika.BasicProperties(
+            delivery_mode=2  # make message persistent
+        )
     )
     print(f"Bridge: MQTT {msg.topic} -> RabbitMQ {routing_key}: {data}")
 
